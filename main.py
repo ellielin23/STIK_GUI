@@ -80,7 +80,10 @@ class GUI(QMainWindow):
 
         ### Config Dictionary ###
         # create the dictionary editor
-        self.configUpdate = {"Dataset Config": {}, "Base Config": BaseConfig}
+        self.configUpdate = {"Dataset Config": {
+            "Time Interval": 0,
+            "Scale": 0,
+        }, "Base Config": BaseConfig}
         self.configEdit = QDictEdit(self.configUpdate)
         self.configEdit.resize(500, 500)
 
