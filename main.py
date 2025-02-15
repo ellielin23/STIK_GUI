@@ -28,7 +28,9 @@ from PyQt5.QtCore import Qt, QSize
 from ProcessorThread import ProcessWorker
 from Visualizer import VisualizeWidget
 from ConfigEdit import QDictEdit
+from PlotWidget import PlotWidget
 from init.initialize import BaseConfig
+
 
 path = os.getcwd()
 try:
@@ -68,8 +70,9 @@ class GUI(QMainWindow):
         self.start_process_button = QPushButton("Process", self)
         self.start_process_button.clicked.connect(self.toggle_process)
 
-        ### Plot Widget ###
-        self.visualizeWidget = VisualizeWidget(parent=self)
+        ### Visualize and Plot Widget ###
+        self.visualize_widget = VisualizeWidget(parent=self)
+        self.plot_widget = PlotWidget(parent=self)
 
         ### Progres Bar ###
         self.progress_bar = QProgressBar(self)
@@ -103,9 +106,13 @@ class GUI(QMainWindow):
         topButtonsLayout.addWidget(load_dataset_button)
 
         ### Add splitter between plot and dict ###
+        visual_plot_widget = QWidget()
+        visual_plot_layout = QVBoxLayout(visual_plot_widget)
+        visual_plot_layout.addWidget(self.visualize_widget)
+        visual_plot_layout.addWidget(self.plot_widget)
         layout_plot = QHBoxLayout()
         plotSplitter = QSplitter()
-        plotSplitter.addWidget(self.visualizeWidget)
+        plotSplitter.addWidget(visual_plot_widget)
         plotSplitter.addWidget(self.configEdit)
         plotSplitter.setStretchFactor(0, 5)
         plotSplitter.setStretchFactor(1, 1)
@@ -147,7 +154,7 @@ class GUI(QMainWindow):
         print(path)
         self.dataset_path = path
         self.dataset_name = path.name  # Use the folder name as the dataset name
-        self.visualizeWidget.visualize_data(self.dataset_path)
+        self.visualize_widget.visualize_data(self.dataset_path)
         self.configEdit.update_basic_configs(self.dataset_name, dataset_size, len(all_files))
 
     def start_process(self):
@@ -165,7 +172,7 @@ class GUI(QMainWindow):
         ### Create Threads and Connections ###
         self.processor_worker = ProcessWorker(self.dataset_path, self.config)
         # Connect processor -> visualizer
-        self.processor_worker.dataGenerated.connect(self.visualizeWidget.visualize_data)
+        self.processor_worker.dataGenerated.connect(self.visualize_widget.visualize_data)
         # Connect processor finished -> finish_process
         self.processor_worker.finished.connect(self.finish_process)
         self.processor_worker.start() # begin process
@@ -181,6 +188,7 @@ class GUI(QMainWindow):
 
     def finish_process(self):
         self.dataset_status_label.setText('<html><b>Processed</b></html>')
+        self.plot_widget.plot()
         self.stop_process()
 
     def closeEvent(self, event):
