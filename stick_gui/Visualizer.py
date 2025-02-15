@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 class VisualizeWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(500, 300)
+        self.setMinimumSize(500, 200)
 
         # Scroll area setup
         self.scroll_area = QScrollArea(self)
@@ -31,7 +31,7 @@ class VisualizeWidget(QWidget):
         # Image list
         self.image_files = []
         self.image_labels = []
-        self.img_height = 250  # Fixed height for consistency
+        self.img_height = self.height()  # Fixed height for consistency
 
     def visualize_data(self, folder_path):
         """Load .jpeg images from the specified folder."""

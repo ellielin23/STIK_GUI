@@ -25,6 +25,8 @@ class ProcessWorker(QThread):
             QMessageBox.critical(None, "Error", "No valid Dataset selected.")
             return
 
+        print(self.config)
+
         if self.running:
             self.dataGenerated.emit(self.dataset_path)
             self.finished.emit()

@@ -61,8 +61,8 @@ class GUI(QMainWindow):
     def init_ui(self):
         """ Set up the UI Layout """
         ### Central Widget ###
-        self.setWindowTitle("Spheriod Tumor Invasion Kinetics")
-        self.resize(800, 500) # finicky between mac and windows
+        self.setWindowTitle("STIK - Spheroid Tumor Invasion Kinetics")
+        self.resize(800, 550) # finicky between mac and windows
         self.centralWidget = QWidget()
         self.setCentralWidget(self.centralWidget)
 
@@ -95,8 +95,8 @@ class GUI(QMainWindow):
             "Scale": 0,
         }, "Base Config": BaseConfig}
         self.configEdit = QDictEdit(self.configUpdate)
-        self.configEdit.resize(500, 500)
-        self.configEdit.setMinimumSize(200,400)
+        # self.configEdit.resize(500, 500)
+        self.configEdit.setMinimumSize(225,400)
 
         ### Adding all Components ###
         layout = QVBoxLayout()
@@ -106,21 +106,27 @@ class GUI(QMainWindow):
         topButtonsLayout.addWidget(self.progress_bar)
         topButtonsLayout.addWidget(load_dataset_button)
 
-        ### Add splitter between plot and dict ###
+        ### Add splitter between data visualizer and plot and dict ###
         visual_plot_widget = QWidget()
         visual_plot_layout = QVBoxLayout(visual_plot_widget)
         visual_plot_layout.setSpacing(1)  # No extra space between widgets
         visual_plot_layout.setContentsMargins(0, 0, 0, 0)
-        visual_plot_layout.addWidget(self.visualize_widget)
-        visual_plot_layout.addWidget(self.plot_widget)
-        layout_plot = QHBoxLayout()
-        plotSplitter = QSplitter()
-        plotSplitter.addWidget(visual_plot_widget)
-        plotSplitter.addWidget(self.configEdit)
-        plotSplitter.setStretchFactor(0, 5)
-        plotSplitter.setStretchFactor(1, 1)
 
-        layout_plot.addWidget(plotSplitter)
+        visual_plot_splitter = QSplitter(Qt.Vertical)
+        visual_plot_splitter.addWidget(self.visualize_widget)
+        visual_plot_splitter.addWidget(self.plot_widget)
+        visual_plot_splitter.setStretchFactor(0, 1)
+        visual_plot_splitter.setStretchFactor(1, 1)
+        visual_plot_layout.addWidget(visual_plot_splitter)
+
+        layout_plot = QHBoxLayout()
+        visual_config_splitter = QSplitter()
+        visual_config_splitter.addWidget(visual_plot_widget)
+        visual_config_splitter.addWidget(self.configEdit)
+        visual_config_splitter.setStretchFactor(0, 5)
+        visual_config_splitter.setStretchFactor(1, 1)
+
+        layout_plot.addWidget(visual_config_splitter)
         layout.addLayout(topButtonsLayout)
         layout.addLayout(layout_plot)
 
