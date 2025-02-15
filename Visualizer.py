@@ -7,7 +7,7 @@ from PyQt5.QtCore import Qt
 class VisualizeWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(500, 500)  # Set a reasonable size for embedding
+        self.setMinimumSize(500, 300)  # Set a reasonable size for embedding
 
         self.image_label = QLabel(self)  # Label to display the image
         self.image_label.setAlignment(Qt.AlignCenter)
