@@ -57,7 +57,7 @@ class VisualizeWidget(QWidget):
     def show_images(self):
         """Display images in a horizontal row, maintaining aspect ratio."""
         self.clear_images()
-
+        self.img_height = self.height()
         for image_file in self.image_files:
             pixmap = QPixmap(str(image_file))
 
