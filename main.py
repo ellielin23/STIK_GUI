@@ -1,6 +1,12 @@
 ###########################################################################
 ################################# IMPORTS #################################
 ###########################################################################
+
+# conda create --name STIK_GUI python=3.12
+# conda activate STIK_GUI
+# conda install --file requirements.txt
+# conda deactivate
+
 import sys, os, inspect
 from pathlib import Path
 from PyQt5.QtWidgets import (
