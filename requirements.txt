@@ -1,2 +1,2 @@
-PyQt
+PyQt5
 Matplotlib

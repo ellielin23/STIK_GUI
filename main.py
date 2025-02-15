@@ -5,6 +5,7 @@
 # conda create --name STIK_GUI python=3.12
 # conda activate STIK_GUI
 # conda install --file requirements.txt
+# make sure you install pyqt and matplotlib
 # conda deactivate
 
 import sys, os, inspect
