@@ -1,5 +1,5 @@
 from pathlib import Path
-from PyQt5.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QScrollArea, QSizePolicy
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
@@ -7,36 +7,31 @@ from PyQt5.QtCore import Qt
 class VisualizeWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(500, 300)  # Set a reasonable size for embedding
+        self.setMinimumSize(500, 300)
 
-        self.image_label = QLabel(self)  # Label to display the image
-        self.image_label.setAlignment(Qt.AlignCenter)
+        # Scroll area setup
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # Enable horizontal scrolling
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)  # Hide vertical scrollbar
 
-        # Navigation buttons
-        self.prev_button = QPushButton("Previous", self)
-        self.next_button = QPushButton("Next", self)
+        # Container widget inside scroll area
+        self.container = QWidget()
+        self.image_layout = QHBoxLayout(self.container)
+        self.image_layout.setSpacing(10)  # 10px gap between images
+        self.image_layout.setContentsMargins(0, 0, 0, 0)  # No extra padding
 
-        # Layout setup
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.prev_button)
-        button_layout.addWidget(self.next_button)
+        self.scroll_area.setWidget(self.container)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.image_label)
-        layout.addLayout(button_layout)
+        # Main layout
+        layout = QHBoxLayout()
+        layout.addWidget(self.scroll_area)
         self.setLayout(layout)
 
-        # Image list and index
+        # Image list
         self.image_files = []
-        self.current_index = 0
-
-        # Button signals
-        self.prev_button.clicked.connect(self.show_previous_image)
-        self.next_button.clicked.connect(self.show_next_image)
-
-        # Initially disable buttons until images are loaded
-        self.prev_button.setDisabled(True)
-        self.next_button.setDisabled(True)
+        self.image_labels = []
+        self.img_height = 250  # Fixed height for consistency
 
     def visualize_data(self, folder_path):
         """Load .jpeg images from the specified folder."""
@@ -44,33 +39,40 @@ class VisualizeWidget(QWidget):
         self.image_files = sorted([f for f in path.iterdir() if f.suffix.lower() == ".jpeg"])
 
         if not self.image_files:
-            self.image_label.setText("No .jpeg images found in the folder.")
-            self.prev_button.setDisabled(True)
-            self.next_button.setDisabled(True)
+            self.clear_images()
+            label = QLabel("No .jpeg images found in the folder.")
+            label.setAlignment(Qt.AlignCenter)
+            self.image_layout.addWidget(label)
         else:
-            self.current_index = 0
-            self.show_image()
-            self.prev_button.setDisabled(False)
-            self.next_button.setDisabled(False)
+            self.show_images()
 
-    def show_image(self):
-        """Display the current image."""
-        if self.image_files:
-            pixmap = QPixmap(str(self.image_files[self.current_index]))
-            self.image_label.setPixmap(pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+    def clear_images(self):
+        """Remove all images from the layout."""
+        while self.image_layout.count():
+            item = self.image_layout.takeAt(0)
+            if item.widget():
+                item.widget().deleteLater()
+        self.image_labels.clear()
 
-            # Enable/disable buttons based on index
-            self.prev_button.setDisabled(self.current_index == 0)
-            self.next_button.setDisabled(self.current_index == len(self.image_files) - 1)
+    def show_images(self):
+        """Display images in a horizontal row, maintaining aspect ratio."""
+        self.clear_images()
 
-    def show_previous_image(self):
-        """Go to the previous image."""
-        if self.current_index > 0:
-            self.current_index -= 1
-            self.show_image()
+        for image_file in self.image_files:
+            pixmap = QPixmap(str(image_file))
 
-    def show_next_image(self):
-        """Go to the next image."""
-        if self.current_index < len(self.image_files) - 1:
-            self.current_index += 1
-            self.show_image()
+            # Scale image to maintain aspect ratio while filling height
+            scaled_pixmap = pixmap.scaledToHeight(self.img_height, Qt.SmoothTransformation)
+
+            label = QLabel(self)
+            label.setPixmap(scaled_pixmap)
+            label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+            label.setAlignment(Qt.AlignCenter)
+
+            self.image_layout.addWidget(label)
+            self.image_labels.append(label)
+
+        # Ensure the container's minimum width is large enough to fit all images side by side
+        total_width = sum(label.pixmap().width() for label in self.image_labels) + (10 * len(self.image_labels))
+        self.container.setMinimumWidth(total_width)
+

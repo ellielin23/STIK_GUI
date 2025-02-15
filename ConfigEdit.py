@@ -11,7 +11,6 @@ class QDictEdit(QTreeView):
 
     def __init__(self, config):
         super(QDictEdit, self).__init__()
-
         self.config = config
         self.tree = QTreeView()
 
@@ -33,7 +32,7 @@ class QDictEdit(QTreeView):
         self.tree.model().itemChanged.connect(self.handleItemChanged)
 
         self.tree.model().setHorizontalHeaderLabels(['Parameter', 'Value'])
-        self.tree.setColumnWidth(0, 150)
+        self.tree.setColumnWidth(0, 125)
         self.tree.setColumnWidth(1, 50)
 
         ### loop through the dictionary and load into tree

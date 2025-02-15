@@ -5,3 +5,4 @@ torchvison
 pycocotools
 detectron2
 opencv
+pyqtgraph
