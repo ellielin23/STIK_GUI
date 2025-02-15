@@ -96,6 +96,7 @@ class GUI(QMainWindow):
         }, "Base Config": BaseConfig}
         self.configEdit = QDictEdit(self.configUpdate)
         self.configEdit.resize(500, 500)
+        self.configEdit.setMinimumSize(200,400)
 
         ### Adding all Components ###
         layout = QVBoxLayout()
@@ -108,6 +109,8 @@ class GUI(QMainWindow):
         ### Add splitter between plot and dict ###
         visual_plot_widget = QWidget()
         visual_plot_layout = QVBoxLayout(visual_plot_widget)
+        visual_plot_layout.setSpacing(1)  # No extra space between widgets
+        visual_plot_layout.setContentsMargins(0, 0, 0, 0)
         visual_plot_layout.addWidget(self.visualize_widget)
         visual_plot_layout.addWidget(self.plot_widget)
         layout_plot = QHBoxLayout()
@@ -151,7 +154,6 @@ class GUI(QMainWindow):
             QMessageBox.warning(self, "Invalid Folder", "The selected folder contains non-.jpeg files.")
             return
 
-        print(path)
         self.dataset_path = path
         self.dataset_name = path.name  # Use the folder name as the dataset name
         self.visualize_widget.visualize_data(self.dataset_path)

@@ -5,7 +5,7 @@ import numpy as np
 class PlotWidget(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumSize(500, 200)
+        self.setMinimumSize(500, 275)
 
         # Create a PyQtGraph PlotWidget
         self.plot_widget = pg.PlotWidget()
