@@ -16,14 +16,14 @@ class PlotWidget(QWidget):
         self.plot_widget2.setBackground("w")
 
         # Reduce padding around axis labels
-        for plot in [self.plot_widget1, self.plot_widget2]:
-            plot.getPlotItem().layout.setContentsMargins(5, 5, 5, 5)  # Small margins
-            plot.getPlotItem().getAxis('left').setWidth(40)  # Reduce left axis padding
-            plot.getPlotItem().getAxis('bottom').setHeight(30)  # Reduce bottom axis padding
-            plot.getPlotItem().getViewBox().setDefaultPadding(0.05)  # Add spacing from plot data to border
-
-            plot.getPlotItem().getAxis('left').setStyle(tickLength=-1)  # Tick length reduced
-            plot.getPlotItem().getAxis('bottom').setStyle(tickLength=-1)
+        # for plot in [self.plot_widget1, self.plot_widget2]:
+        #     plot.getPlotItem().layout.setContentsMargins(5, 5, 5, 5)  # Small margins
+        #     plot.getPlotItem().getAxis('left').setWidth(40)  # Reduce left axis padding
+        #     plot.getPlotItem().getAxis('bottom').setHeight(30)  # Reduce bottom axis padding
+        #     plot.getPlotItem().getViewBox().setDefaultPadding(0.05)  # Add spacing from plot data to border
+        #
+        #     plot.getPlotItem().getAxis('left').setStyle(tickLength=-1)  # Tick length reduced
+        #     plot.getPlotItem().getAxis('bottom').setStyle(tickLength=-1)
 
         # Configure axis labels
         self.plot_widget1.setLabel("left", "Tumor Area")
