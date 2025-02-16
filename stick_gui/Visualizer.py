@@ -1,10 +1,14 @@
 from pathlib import Path
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QScrollArea, QSizePolicy
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal
+
+import numpy as np
 
 
 class VisualizeWidget(QWidget):
+    dataGenerated = pyqtSignal(np.ndarray)  # Signal to send experiment data
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumSize(500, 200)
@@ -33,18 +37,20 @@ class VisualizeWidget(QWidget):
         self.image_labels = []
         self.img_height = self.height()  # Fixed height for consistency
 
-    def visualize_data(self, folder_path):
+    def visualize_data(self, folder_path, areas):
         """Load .jpeg images from the specified folder."""
         path = Path(folder_path)
-        self.image_files = sorted([f for f in path.iterdir() if f.suffix.lower() == ".jpeg"])
+        self.image_files = sorted([f for f in path.iterdir() if f.suffix.lower() in [".jpeg", ".jpg"]])
 
         if not self.image_files:
             self.clear_images()
-            label = QLabel("No .jpeg images found in the folder.")
+            label = QLabel("No .jpeg/.jpg images found in the folder.")
             label.setAlignment(Qt.AlignCenter)
             self.image_layout.addWidget(label)
         else:
             self.show_images()
+
+        self.dataGenerated.emit(areas)
 
     def clear_images(self):
         """Remove all images from the layout."""

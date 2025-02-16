@@ -30,7 +30,7 @@ from Visualizer import VisualizeWidget
 from ConfigEdit import QDictEdit
 from PlotWidget import PlotWidget
 from init.initialize import BaseConfig
-
+import numpy as np
 
 path = os.getcwd()
 try:
@@ -162,7 +162,7 @@ class GUI(QMainWindow):
 
         self.dataset_path = path
         self.dataset_name = path.name  # Use the folder name as the dataset name
-        self.visualize_widget.visualize_data(self.dataset_path)
+        self.visualize_widget.visualize_data(self.dataset_path, np.zeros(len(jpeg_files)))
         self.configEdit.update_basic_configs(self.dataset_name, dataset_size, len(all_files))
 
     def start_process(self):
@@ -177,6 +177,7 @@ class GUI(QMainWindow):
             QMessageBox.critical(None, "Error", "No Scale (nM) Specified.")
             return
         self.start_process_button.setText("Stop Process")
+        self.dataset_status_label.setText('<html><b>Processing...</b></html>')
 
         ### Handle Updating the Config ###
         UpdateConfig = self.configEdit.config["Dataset Config"]
@@ -187,6 +188,8 @@ class GUI(QMainWindow):
         self.processor_worker = ProcessWorker(self.dataset_path, self.config)
         # Connect processor -> visualizer
         self.processor_worker.dataGenerated.connect(self.visualize_widget.visualize_data)
+        # Connect Visualizer -> Plotter
+        self.visualize_widget.dataGenerated.connect(self.plot_widget.plot)
         # Connect processor finished -> finish_process
         self.processor_worker.finished.connect(self.finish_process)
         self.processor_worker.start() # begin process
@@ -202,7 +205,6 @@ class GUI(QMainWindow):
 
     def finish_process(self):
         self.dataset_status_label.setText('<html><b>Processed</b></html>')
-        self.plot_widget.plot()
         self.stop_process()
 
     def closeEvent(self, event):
