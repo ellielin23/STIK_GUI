@@ -170,6 +170,12 @@ class GUI(QMainWindow):
         if self.dataset_path is None:
             QMessageBox.critical(None, "Error", "No Dataset Loaded.")
             return
+        if self.configEdit.config["Dataset Config"]["Time Interval"] == 0:
+            QMessageBox.critical(None, "Error", "No Time Interval (hrs) Specified.")
+            return
+        if self.configEdit.config["Dataset Config"]["Scale"] == 0:
+            QMessageBox.critical(None, "Error", "No Scale (nM) Specified.")
+            return
         self.start_process_button.setText("Stop Process")
 
         ### Handle Updating the Config ###
