@@ -1,0 +1,6 @@
+train: ./../yolo_dataset/train/images  # Path to training images
+val: ./../yolo_dataset/val/images      # Path to validation images
+
+nc: 1  # Number of classes (adjust according to your dataset)
+names:
+  0: invasion area

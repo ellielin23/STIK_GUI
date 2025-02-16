@@ -1,5 +1,0 @@
-train: ./../../../yolo_datasets/dataset_c3v1_processed/train_split/train.txt  # Path to the new train.txt file
-val: ./../../../yolo_datasets/dataset_c3v1_processed/test_split/test.txt      # Path to the new test.txt file
-nc: 1                                 # Number of classes (adjust based on your dataset)
-names:
-  0: invasion area
