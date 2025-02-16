@@ -7,3 +7,4 @@ detectron2
 opencv
 pyqtgraph~=0.13.1
 numpy~=1.26.4
+ultralytics
