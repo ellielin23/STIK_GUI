@@ -17,7 +17,7 @@
     An AI-powered tool for tracking and predicting spheroid tumor invasion kinetics that eliminates the need for manual tracing, featuring an intuitive graphical user interface. 
     <br />
     <br />
-    <a href="https://github.com/sonnyloweus/STIK_GUI"><strong>Github Repo »</strong></a>
+    <a href="https://github.com/ellielin23/STIK_GUI"><strong>Github Repo »</strong></a>
     <br />
     <br />
     <a href="https://github.com/ellielin23">Ellie Lin</a>
