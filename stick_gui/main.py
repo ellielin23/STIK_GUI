@@ -2,11 +2,16 @@
 ################################# IMPORTS #################################
 ###########################################################################
 
-# To update: conda env update --file environment.yml --prune
-# To create: conda env create -f environment.yml
+# To update existing STIK_GUI conda env: conda env update --file environment.yml --prune --update-deps --force-reinstall
+# To create a STICK_GUI conda env from scratch: conda env create -f environment.yml
 # conda activate STIK_GIU
 # Run main.py
 # conda deactivate
+
+# Global TODOs
+# TODO: incorporate scale and time interval for the correct axis
+# TODO: make processed images display during processing instead of all at once after processing is complete
+# TODO: button to save all annotated images, button to save graph data, button to export graphs
 
 import sys, os, inspect
 from pathlib import Path
