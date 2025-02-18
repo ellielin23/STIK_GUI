@@ -2,10 +2,10 @@
 ################################# IMPORTS #################################
 ###########################################################################
 
-# conda create --name STIK_GUI python=3.12
-# conda activate STIK_GUI
-# conda install --file requirements.txt
-# make sure you install pyqt and matplotlib
+# To update: conda env update --file environment.yml --prune
+# To create: conda env create -f environment.yml
+# conda activate STIK_GIU
+# Run main.py
 # conda deactivate
 
 import sys, os, inspect

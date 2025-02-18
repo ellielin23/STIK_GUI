@@ -1,0 +1,15 @@
+# To update: conda env update --file environment.yml --prune
+# To create: conda env create -f environment.yml
+name: STIK_GUI
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12.9
+  - pyqt=5.15.10
+  - pyqtgraph==0.13.1
+  - pip
+  - pip:
+    - ultralytics==8.3.75  # Install Ultralytics via pip
+    - PyQt5_sip==12.13.0  # PyQt5_sip is available via pip
+    - numpy==1.26.4
