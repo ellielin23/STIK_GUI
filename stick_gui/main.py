@@ -3,9 +3,9 @@
 ###########################################################################
 
 # To update existing STIK_GUI conda env: conda env update --file environment.yml --prune --update-deps --force-reinstall
-# To create a STICK_GUI conda env from scratch: conda env create -f environment.yml
-# conda activate STIK_GIU
-# Run main.py
+# To create a STIK_GUI conda env from scratch: conda env create -f environment.yml
+# conda activate STIK_GUI
+# Run main.py with : python main.py
 # conda deactivate
 
 # Global TODOs
@@ -191,12 +191,14 @@ class GUI(QMainWindow):
 
         ### Create Threads and Connections ###
         self.processor_worker = ProcessWorker(self.dataset_path, self.config)
+        self.processor_worker.started.connect(self.visualize_widget.clear_images)
         # Connect processor -> visualizer
-        self.processor_worker.dataGenerated.connect(self.visualize_widget.visualize_data)
+        self.processor_worker.dataGenerated.connect(self.visualize_widget.visualize_prediction)
         # Connect Visualizer -> Plotter
-        self.visualize_widget.dataGenerated.connect(self.plot_widget.plot)
+        self.visualize_widget.dataGenerated.connect(self.plot_widget.collect)
         # Connect processor finished -> finish_process
         self.processor_worker.finished.connect(self.finish_process)
+        self.processor_worker.finished.connect(self.plot_widget.plot)
         self.processor_worker.start() # begin process
 
     def stop_process(self):

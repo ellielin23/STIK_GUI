@@ -39,34 +39,30 @@ class PlotWidget(QWidget):
         layout.addWidget(self.plot_widget1)
         layout.addWidget(self.plot_widget2)
         self.setLayout(layout)
+    
+        self.areas = []
+        
+    def collect(self, area):
+        self.areas.append(area)
 
-    def plot(self, areas):
+    def plot(self):
         """Plots area vs time on plot_widget1 and the derivative of area vs time on plot_widget2"""
         self.plot_widget1.clear()
         self.plot_widget2.clear()
 
         # Time is just the index of areas
-        time = np.arange(len(areas))
+        time = np.arange(len(self.areas))
 
         # Plot area vs time
-        self.plot_widget1.plot(time, areas, pen=pg.mkPen("b", width=2), name="Area vs Time")
-        for i, a in enumerate(areas):
+        self.plot_widget1.plot(time, self.areas, pen=pg.mkPen("b", width=2), name="Area vs Time")
+        for i, a in enumerate(self.areas):
             self.plot_widget1.plot([i], [a], pen=None, symbol='o', symbolBrush='g', symbolSize=10)
-
-        # Calculate the line of best fit for area vs time
-        slope_area, intercept_area = np.polyfit(time, areas, 1)  # 1 is for linear fit
-        best_fit_line_area = slope_area * time + intercept_area
-        self.plot_widget1.plot(time, best_fit_line_area, pen=pg.mkPen("y", width=2), name="Best Fit Line")
-
-        # Display the best fit equation as a label on the plot
-        best_fit_eq_area = f"y = {slope_area:.2f}x + {intercept_area:.2f}"
-        self.plot_widget1.addItem(pg.TextItem(text=best_fit_eq_area, color='y', anchor=(0.5, 0.5), border='w'))
 
         # Auto scale the plot to fit the data
         self.plot_widget1.autoRange()
 
         # Calculate the derivative (change in area with respect to time)
-        area_derivative = np.diff(areas)
+        area_derivative = np.diff(self.areas)
 
         # Time for the derivative plot is shorter by one step because diff reduces the size by 1
         time_derivative = time[:-1]  # Align time with the derivative data
@@ -75,16 +71,6 @@ class PlotWidget(QWidget):
         self.plot_widget2.plot(time_derivative, area_derivative, pen=pg.mkPen("r", width=2), name="d(area)/dt")
         for i, d in enumerate(area_derivative):
             self.plot_widget2.plot([i], [d], pen=None, symbol='o', symbolBrush='r', symbolSize=10)
-
-        # # Calculate the line of best fit for the derivative
-        # slope_derivative, intercept_derivative = np.polyfit(time_derivative, area_derivative, 1)  # Linear fit
-        # best_fit_line_derivative = slope_derivative * time_derivative + intercept_derivative
-        # self.plot_widget2.plot(time_derivative, best_fit_line_derivative, pen=pg.mkPen("g", width=2),
-        #                        name="Best Fit Line")
-        #
-        # # Display the best fit equation for the derivative as a label on the plot
-        # best_fit_eq_derivative = f"y = {slope_derivative:.2f}x + {intercept_derivative:.2f}"
-        # self.plot_widget2.addItem(pg.TextItem(text=best_fit_eq_derivative, color='g', anchor=(0.5, 0.5), border='w'))
 
         # Auto scale the plot to fit the data
         self.plot_widget2.autoRange()

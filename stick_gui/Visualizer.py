@@ -1,13 +1,13 @@
 from pathlib import Path
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout, QScrollArea, QSizePolicy
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtCore import Qt, pyqtSignal
 
 import numpy as np
 
 
 class VisualizeWidget(QWidget):
-    dataGenerated = pyqtSignal(np.ndarray)  # Signal to send experiment data
+    dataGenerated = pyqtSignal(float)  # Signal to send experiment data
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -50,7 +50,27 @@ class VisualizeWidget(QWidget):
         else:
             self.show_images()
 
-        self.dataGenerated.emit(areas)
+    def visualize_prediction(self, predicted_image, area):        
+        self.img_height = self.height()
+        height, width, channel = predicted_image.shape
+        bytes_per_line = 3 * width
+        q_img = QImage(predicted_image.data, width, height, bytes_per_line, QImage.Format_RGB888)
+        image = QPixmap.fromImage(q_img)
+        pixmap = QPixmap(image)
+
+        # Scale image to maintain aspect ratio while filling height
+        scaled_pixmap = pixmap.scaledToHeight(self.img_height, Qt.SmoothTransformation)
+
+        label = QLabel(self)
+        label.setPixmap(scaled_pixmap)
+        label.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        label.setAlignment(Qt.AlignCenter)
+
+        self.image_layout.addWidget(label)
+        self.image_labels.append(label)
+
+        self.dataGenerated.emit(area)
+
 
     def clear_images(self):
         """Remove all images from the layout."""
@@ -79,6 +99,6 @@ class VisualizeWidget(QWidget):
             self.image_labels.append(label)
 
         # Ensure the container's minimum width is large enough to fit all images side by side
-        total_width = sum(label.pixmap().width() for label in self.image_labels) + (10 * len(self.image_labels))
-        self.container.setMinimumWidth(total_width)
+        # total_width = sum(label.pixmap().width() for label in self.image_labels) + (10 * len(self.image_labels))
+        # self.container.setMinimumWidth(total_width)
 
