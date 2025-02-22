@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QHBoxLayout, QWidget
+from PyQt5.QtGui import QFont
 import pyqtgraph as pg
 import numpy as np
 
@@ -15,16 +16,6 @@ class PlotWidget(QWidget):
         self.plot_widget1.setBackground("w")
         self.plot_widget2.setBackground("w")
 
-        # Reduce padding around axis labels
-        # for plot in [self.plot_widget1, self.plot_widget2]:
-        #     plot.getPlotItem().layout.setContentsMargins(5, 5, 5, 5)  # Small margins
-        #     plot.getPlotItem().getAxis('left').setWidth(40)  # Reduce left axis padding
-        #     plot.getPlotItem().getAxis('bottom').setHeight(30)  # Reduce bottom axis padding
-        #     plot.getPlotItem().getViewBox().setDefaultPadding(0.05)  # Add spacing from plot data to border
-        #
-        #     plot.getPlotItem().getAxis('left').setStyle(tickLength=-1)  # Tick length reduced
-        #     plot.getPlotItem().getAxis('bottom').setStyle(tickLength=-1)
-
         # Configure axis labels
         self.plot_widget1.setLabel("left", "Tumor Area")
         self.plot_widget1.setLabel("bottom", "Time")
@@ -33,6 +24,19 @@ class PlotWidget(QWidget):
         self.plot_widget2.setLabel("left", "Invasion Speed")
         self.plot_widget2.setLabel("bottom", "Time")
         self.plot_widget2.addLegend()
+
+        # Reduce padding around axis labels
+        for plot in [self.plot_widget1, self.plot_widget2]:
+            plot_item = plot.getPlotItem()
+            plot_item.layout.setContentsMargins(5, 5, 5, 5)  # Small margins
+            plot_item.getAxis('left').setWidth(30)  # Reduce left axis padding
+            plot_item.getAxis('bottom').setHeight(25)  # Reduce bottom axis padding
+            plot_item.getViewBox().setDefaultPadding(0.1)  # Add spacing from plot data to border
+
+            # Set axis label font size
+            axis_style = {'tickFont': QFont('Arial', 6)}
+            plot_item.getAxis('left').setStyle(**axis_style)
+            plot_item.getAxis('bottom').setStyle(**axis_style)
 
         # Layout to hold the two plot widgets side by side
         layout = QHBoxLayout()

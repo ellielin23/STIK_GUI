@@ -114,7 +114,7 @@ class GUI(QMainWindow):
         ### Add splitter between data visualizer and plot and dict ###
         visual_plot_widget = QWidget()
         visual_plot_layout = QVBoxLayout(visual_plot_widget)
-        visual_plot_layout.setSpacing(1)  # No extra space between widgets
+        visual_plot_layout.setSpacing(0)  # No extra space between widgets
         visual_plot_layout.setContentsMargins(0, 0, 0, 0)
 
         visual_plot_splitter = QSplitter(Qt.Vertical)
