@@ -27,11 +27,18 @@ class ProcessWorker(QThread):
         self.running = True
         self.output_dir = Path(output_path + "/segmentations")
 
-        # For ellie, use the commented out below
         # self.model = YOLO(os.path.abspath("stick_gui/best.pt"))
-        self.model = YOLO(os.path.abspath("best.pt"))
+        # self.model = YOLO(os.path.abspath("best.pt"))
+        self.model = None
+        try:
+            self.model = YOLO(os.path.abspath("best.pt"))
+        except:
+            self.model = YOLO(os.path.abspath("stick_gui/best.pt"))
 
     def run(self):
+        if self.model is None:
+            QMessageBox.critical(None, "Error", "No model exists.")
+            return
         if self.dataset_path is None:
             QMessageBox.critical(None, "Error", "No valid Dataset selected.")
             return
