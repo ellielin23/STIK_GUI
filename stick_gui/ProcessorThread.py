@@ -18,14 +18,19 @@ class ProcessWorker(QThread):
     """
     dataGenerated = pyqtSignal(np.ndarray, float)  # Signal to send experiment data
     finished = pyqtSignal()
+    updateProgress = pyqtSignal(int, int)
 
     def __init__(self, dataset_path, config, parent=None):
         super().__init__()
         self.config = config
         self.dataset_path = dataset_path  # This is already instantiated
         self.running = True
-        self.model = YOLO(os.path.abspath("stick_gui/best.pt"))
-        self.output_dir = os.path.abspath("stick_gui/output")
+
+        # For ellie, use the two commented out below
+        # self.model = YOLO(os.path.abspath("stick_gui/best.pt"))
+        # self.output_dir = os.path.abspath("stick_gui/output")
+        self.model = YOLO(os.path.abspath("best.pt"))
+        self.output_dir = os.path.abspath("output")
        
     def run(self):
         if self.dataset_path is None:
@@ -54,6 +59,7 @@ class ProcessWorker(QThread):
                     predicted_image = result[0].plot()
                     cv2.imwrite(os.path.join(self.output_dir, image_file.name), predicted_image)
                     self.dataGenerated.emit(predicted_image, area)
+                    self.updateProgress.emit(len(areas), len(image_files))
                 
         print("Segmentation Areas:", areas)
 

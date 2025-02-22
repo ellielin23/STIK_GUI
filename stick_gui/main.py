@@ -169,6 +169,7 @@ class GUI(QMainWindow):
         self.dataset_name = path.name  # Use the folder name as the dataset name
         self.visualize_widget.visualize_data(self.dataset_path, np.zeros(len(jpeg_files)))
         self.configEdit.update_basic_configs(self.dataset_name, dataset_size, len(all_files))
+        self.progress_bar.setValue(0)
 
     def start_process(self):
         """ Start the experiment (experiment and data worker). """
@@ -189,17 +190,24 @@ class GUI(QMainWindow):
         BaseConfig = self.configEdit.config["Base Config"]
         self.config = BaseConfig | UpdateConfig
 
+        self.progress_bar.setValue(0)
+
         ### Create Threads and Connections ###
         self.processor_worker = ProcessWorker(self.dataset_path, self.config)
         self.processor_worker.started.connect(self.visualize_widget.clear_images)
         # Connect processor -> visualizer
         self.processor_worker.dataGenerated.connect(self.visualize_widget.visualize_prediction)
+        self.processor_worker.updateProgress.connect(self.update_progress_bar)
         # Connect Visualizer -> Plotter
         self.visualize_widget.dataGenerated.connect(self.plot_widget.collect)
         # Connect processor finished -> finish_process
         self.processor_worker.finished.connect(self.finish_process)
         self.processor_worker.finished.connect(self.plot_widget.plot)
         self.processor_worker.start() # begin process
+
+    def update_progress_bar(self, completed, total):
+        progress = int((completed / total) * 100)
+        self.progress_bar.setValue(progress)
 
     def stop_process(self):
         """ Stop an Experiment and all threads."""
