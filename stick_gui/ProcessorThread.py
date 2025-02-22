@@ -20,27 +20,25 @@ class ProcessWorker(QThread):
     finished = pyqtSignal()
     updateProgress = pyqtSignal(int, int)
 
-    def __init__(self, dataset_path, config, parent=None):
+    def __init__(self, dataset_path, config, output_path, parent=None):
         super().__init__()
         self.config = config
         self.dataset_path = dataset_path  # This is already instantiated
         self.running = True
+        self.output_dir = Path(output_path + "/segmentations")
 
-        # For ellie, use the two commented out below
+        # For ellie, use the commented out below
         # self.model = YOLO(os.path.abspath("stick_gui/best.pt"))
-        # self.output_dir = os.path.abspath("stick_gui/output")
         self.model = YOLO(os.path.abspath("best.pt"))
-        self.output_dir = os.path.abspath("output")
-       
+
     def run(self):
         if self.dataset_path is None:
             QMessageBox.critical(None, "Error", "No valid Dataset selected.")
             return
         print(self.config)
 
-        shutil.rmtree(self.output_dir)
         os.makedirs(self.output_dir, exist_ok=True)
-        
+
         path = Path(self.dataset_path)
         image_files = sorted([f for f in path.iterdir() if f.suffix.lower() in [".jpeg", ".jpg"]])
 
