@@ -4,7 +4,7 @@ import pyqtgraph as pg
 import numpy as np
 
 class PlotWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, scale=1, time_interval=1):
         super().__init__(parent)
         self.setMinimumSize(500, 150)
 
@@ -17,12 +17,12 @@ class PlotWidget(QWidget):
         self.plot_widget2.setBackground("w")
 
         # Configure axis labels
-        self.plot_widget1.setLabel("left", "Tumor Area")
-        self.plot_widget1.setLabel("bottom", "Time")
+        self.plot_widget1.setLabel("left", "Tumor Area (nm^2)")
+        self.plot_widget1.setLabel("bottom", "Time (s)")
         self.plot_widget1.addLegend()
 
-        self.plot_widget2.setLabel("left", "Invasion Speed")
-        self.plot_widget2.setLabel("bottom", "Time")
+        self.plot_widget2.setLabel("left", "Invasion Speed (nm^2/s)")
+        self.plot_widget2.setLabel("bottom", "Time (s)")
         self.plot_widget2.addLegend()
 
         # Reduce padding around axis labels
@@ -45,9 +45,12 @@ class PlotWidget(QWidget):
         self.setLayout(layout)
     
         self.areas = []
+        self.scale = scale # nm per pixel
+        self.time_interval = time_interval # seconds per frame
         
-    def collect(self, area):
-        self.areas.append(area)
+    def collect(self, area_pixels):
+        area_nm = (area_pixels * self.scale)**2
+        self.areas.append(area_nm)
 
     def plot(self):
         """Plots area vs time on plot_widget1 and the derivative of area vs time on plot_widget2"""
@@ -55,7 +58,7 @@ class PlotWidget(QWidget):
         self.plot_widget2.clear()
 
         # Time is just the index of areas
-        time = np.arange(len(self.areas))
+        time = np.arange(len(self.areas) * self.time_interval)
 
         # Plot area vs time
         self.plot_widget1.plot(time, self.areas, pen=pg.mkPen("b", width=2), name="Area vs Time")

@@ -10,7 +10,6 @@
 
 # Global TODOs
 # TODO: incorporate scale and time interval for the correct axis
-# TODO: make processed images display during processing instead of all at once after processing is complete
 # TODO: button to save all annotated images, button to save graph data, button to export graphs
 
 import sys, os, inspect
