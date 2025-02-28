@@ -158,12 +158,13 @@ class GUI(QMainWindow):
         # Get total size (only for .jpeg files)
         dataset_size = self.format_size(sum(f.stat().st_size for f in jpeg_files))
 
+        print(path)
         if not jpeg_files:
             QMessageBox.warning(self, "Invalid Folder", "The selected folder does not contain any .jpeg files.")
             return
-        if len(jpeg_files) != len(all_files):  # Ensure all files are .jpeg
-            QMessageBox.warning(self, "Invalid Folder", "The selected folder contains non-.jpeg files.")
-            return
+        # if len(jpeg_files) != len(all_files):  # Ensure all files are .jpeg
+        #     QMessageBox.warning(self, "Invalid Folder", "The selected folder contains non-.jpeg files.")
+        #     return
 
         self.dataset_path = path
         self.dataset_name = path.name  # Use the folder name as the dataset name
